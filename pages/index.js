@@ -1,12 +1,39 @@
 import React, { useEffect } from "react";
+import { Card, Button } from "semantic-ui-react";
 import factory from "../ethereum/factory";
-export default () => {
-  useEffect(() => {
-    (async function () {
-      const campaigns = await factory.methods.getDeployedCampaigns().call();
-      console.log("campaigns", campaigns);
-    })();
-  }, []);
+import Layout from "../components/Layout";
 
-  return <h1>This is new campaign page!!</h1>;
+const CampaignIndex = ({ campaigns }) => {
+  // this is excute in server side before campaignIndex is rendered
+  CampaignIndex.getInitialProps = async () => {
+    const campaigns = await factory.methods.getDeployedCampaigns().call();
+    return { campaigns };
+  };
+
+  const renderCampaigns = () => {
+    const items = campaigns?.map((address) => ({
+      header: address,
+      description: <a>View Campaign</a>,
+      fluid: true,
+    }));
+
+    return <Card.Group items={items} />;
+  };
+
+  return (
+    <Layout>
+      <div>
+        <h3>Open Campaigns</h3>
+        <Button
+          floated="right"
+          content="Create Campaign"
+          icon={"add circle"}
+          primary
+        />
+        {renderCampaigns()}
+      </div>
+    </Layout>
+  );
 };
+
+export default CampaignIndex;
