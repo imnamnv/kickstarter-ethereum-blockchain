@@ -6,11 +6,16 @@ import { Router } from "../routes";
 
 const ContributeForm = ({ address }) => {
   const [value, setValue] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const onSubmit = async (event) => {
     event.preventDefault();
 
+    setLoading(true);
+    setErrorMessage("");
     const campaign = Campaign(address);
+
     try {
       const accounts = await web3.eth.getAccounts();
       await campaign.methods.contribute().send({
@@ -18,10 +23,13 @@ const ContributeForm = ({ address }) => {
         value: web3.utils.toWei(value, "ether"),
       });
       Router.replaceRoute(`/campaigns/${address}`);
-    } catch (error) {}
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+    setLoading(false);
   };
   return (
-    <Form onSubmit={onSubmit}>
+    <Form error={!!errorMessage} onSubmit={onSubmit}>
       <Form.Field>
         <label> Amount to Contribute</label>
         <Input
@@ -31,7 +39,10 @@ const ContributeForm = ({ address }) => {
           labelPosition="right"
         />
       </Form.Field>
-      <Button primary>Contribute!</Button>
+      <Message error header="Something was wrong!!!" content={errorMessage} />
+      <Button loading={loading} primary>
+        Contribute!
+      </Button>
     </Form>
   );
 };
