@@ -14,21 +14,6 @@ const CampaignShow = ({
   manager,
   address,
 }) => {
-  CampaignShow.getInitialProps = async (props) => {
-    const campaign = await Campaign(props.query.address);
-
-    const summary = await campaign.methods.getSummary().call();
-
-    return {
-      address: props.query.address,
-      minimumContribution: summary[0],
-      balance: summary[1],
-      requestCount: summary[2],
-      approversCount: summary[3],
-      manager: summary[4],
-    };
-  };
-
   const renderCard = () => {
     const items = [
       {
@@ -90,5 +75,22 @@ const CampaignShow = ({
       </Grid>
     </Layout>
   );
+};
+
+CampaignShow.getInitialProps = async (props) => {
+  const campaign = await Campaign(props.query.address);
+  const summary = await campaign.methods.getSummary().call();
+
+  // console.log("accounts", accounts[0]); // account[0] always is currentAccount
+  // console.log("currentAccount", currentAccount);
+
+  return {
+    address: props.query.address,
+    minimumContribution: summary[0],
+    balance: summary[1],
+    requestCount: summary[2],
+    approversCount: summary[3],
+    manager: summary[4],
+  };
 };
 export default CampaignShow;

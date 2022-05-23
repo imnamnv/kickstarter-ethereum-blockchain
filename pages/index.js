@@ -6,10 +6,6 @@ import { Link } from "../routes";
 
 const CampaignIndex = ({ campaigns }) => {
   // this is excute in server side before campaignIndex is rendered
-  CampaignIndex.getInitialProps = async () => {
-    const campaigns = await factory.methods.getDeployedCampaigns().call();
-    return { campaigns };
-  };
 
   const renderCampaigns = () => {
     const items = campaigns?.map((address) => ({
@@ -44,6 +40,11 @@ const CampaignIndex = ({ campaigns }) => {
       </div>
     </Layout>
   );
+};
+
+CampaignIndex.getInitialProps = async () => {
+  const campaigns = await factory.methods.getDeployedCampaigns().call();
+  return { campaigns };
 };
 
 export default CampaignIndex;

@@ -17,9 +17,11 @@ const ContributeForm = ({ address }) => {
     const campaign = Campaign(address);
 
     try {
-      const accounts = await web3.eth.getAccounts();
+      // const accounts = await web3.eth.getAccounts();
+      const currentAccount = await web3.currentProvider.selectedAddress;
+
       await campaign.methods.contribute().send({
-        from: accounts[0],
+        from: currentAccount,
         value: web3.utils.toWei(value, "ether"),
       });
       Router.replaceRoute(`/campaigns/${address}`);

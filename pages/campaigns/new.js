@@ -15,9 +15,11 @@ export default () => {
     setLoading(true);
     setErrorMessage("");
     try {
-      const accounts = await web3.eth.getAccounts();
+      // const accounts = await web3.eth.getAccounts();
+      const currentAccount = await web3.currentProvider.selectedAddress;
+
       await factory.methods.createCampaign(minimumContribution).send({
-        from: accounts[0],
+        from: currentAccount,
         //dont need set gas because we connected to Metamask which caculator the gas fee
       });
 
